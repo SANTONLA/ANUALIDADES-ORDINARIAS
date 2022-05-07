@@ -1,31 +1,1364 @@
-install.packages("lifecontingencies")
+---
+title: "Anualidades con `R` - `lifecontingencies`"
+author: "Xavier Jiménez-Albán"
+date: "Julio de 2020"
+output:
+  html_notebook:
+    toc: true
+    toc_float: true
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE, comment=NA, prompt = TRUE, verbose=FALSE, prompt=TRUE, highlight = FALSE)
+```
+
+
+
+```{r libraries, include=TRUE, message=FALSE}
 library(lifecontingencies)
+```
 
-1. Una persona ahorra $400 cada seis meses y los invierte al 4% convertible semestralmente.  el importe de sus ahorros después de 7 años.
 
+# Anualidades ordinarias
+Se pueden usar los argumentos `arrears` o `immediate` en las funciones `accumulatedValue` y `annuity`
+
+\rule{\textwidth}{0.4pt}
+**1.** Una persona ahorra $400 cada seis meses y los invierte al 4% convertible semestralmente. 
+Hallar el importe de sus ahorros después de 7 años. 
+$$X = VF = R \times \frac{(1+i)^{n}-1}{i}$$
+
+```{r}
 400 * accumulatedValue(i = 0.04 / 2, n = 7 * 2, k = 1, type = "arrears")
+```
 
-2. Un empleado invierte $130 al final de cada trimestre en un fondo que paga 7% convertible trimestralmente. ¿Cuál será el importe del fondo precisamente después de 12 depósitos?
 
-    130 * accumulatedValue(i = 0.07 / 4, n = 12, m = 0, k = 1, type = "arrears")
 
-3. ¿Cuál es el valor presente de $1600 depositados en una cuenta al final de cada trimestre durante 4 años, si la tasa de interés es del 8% convertible trimestralmente?
-  
-  1600 * annuity(i = 0.08 / 4, n = 4 * 4, type = "arrears") 
+\rule{\textwidth}{0.4pt}
+**2.** Un empleado invierte $130 al final de cada trimestre en un fondo que paga 7% convertible trimestralmente. ¿Cuál será el importe del fondo precisamente después de 12 depósitos?
+$$X = VF = R  \times \frac{(1+i)^{n}-1}{i}$$
 
-4. ¿Cuánto debió depositarse el 1 de junio de 2005 en un fondo que pagó el 10% convertible semestralmente con el objeto de poder hacer retiros semestrales de $2500 cada uno, desde el 1 de diciembre de 2005 hasta el 1 de diciembre de 2010?
-  
-  2500 * annuity(i = 0.10 / 2, n = 1 + 5 * 2, type = "immediate")
+```{r}
+130 * accumulatedValue(i = 0.07 / 4, n = 12, m = 0, k = 1, type = "arrears")
+```
 
-5. Una persona compra un coche nuevo en $14000, si entrega su coche usado valorado en $4250 como parte de pago, ¿cuánto tendrá que pagar en efectivo el día de hoy si el saldo restante se lo liquidará mediante el pago de $550 al final de cada mes durante 18 meses, con intereses al 6% convertible mensualmente?
-  
-  14000 - 4250 - 550 * annuity(i = 0.06 / 12, n = 18, type = "arrears")
-6. Un concesionario de automóviles ofrece un auto nuevo con un pago inicial de $8000 y 36 pagos mensuales de $680 cada uno, con interés del 12% capitalizable mensualmente ¿Cuál es el valor de contado del auto?
 
-  8000 + 680 * annuity(i = 0.12 / 12, n = 36, type = "arrears")
+\rule{\textwidth}{0.4pt}
+**3.** ¿Cuál es el valor presente de $1600 depositados en una cuenta al final de cada trimestre durante 4 años, si la tasa de interés es del 8% convertible trimestralmente?
 
-7. El 1 de mayo de 2000 una persona depositó $500 en una cuenta de ahorros que paga el 3% convertible semestralmente y continuó haciendo depósitos similares cada 6 meses desde entonces. Después del 1 de mayo de 2003, el banco elevó el interés al 4% convertible semestralmente. ¿Cuánto registró la cuenta precisamente después del depósito del 1 de noviembre de 2005
+$$ X = VA = R \times \frac{1 - (1+i)^{-n}}{i}$$
+```{r}
+1600 * annuity(i = 0.08 / 4, n = 4 * 4, type = "arrears") 
+```
 
+
+
+\rule{\textwidth}{0.4pt}
+**4.** ¿Cuánto debió depositarse el 1 de junio de 2005 en un fondo que pagó el 10% convertible semestralmente con el objeto de poder hacer retiros semestrales de $2500 cada uno, desde el 1 de diciembre de 2005 hasta el 1 de diciembre de 2010?
+
+$$ X = VA = R \times  \frac{1 - (1+i)^{-n}}{i}$$
+
+```{r}
+2500 * annuity(i = 0.10 / 2, n = 1 + 5 * 2, type = "immediate")
+```
+
+\rule{\textwidth}{0.4pt}
+**5.** Una persona compra un coche nuevo en \$14000, si entrega su coche usado valorado en \$4250 como parte de pago, ¿cuánto tendrá que pagar en efectivo el día de hoy si el saldo restante se lo liquidará mediante el pago de $550 al final de cada mes durante 18 meses, con intereses al 6% convertible mensualmente?
+$$ 14000 = 4250 + X + VA$$
+$$ X = 14000 - 4250 - R \times \frac{1 - (1+i)^{-n}}{i}$$
+
+```{r}
+14000 - 4250 - 550 * annuity(i = 0.06 / 12, n = 18, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+**6.** Un concesionario de automóviles ofrece un auto nuevo con un pago inicial de \$8000 y 36 pagos mensuales de $680 cada uno, 
+con interés del 12% capitalizable mensualmente ¿Cuál es el valor de contado del auto?
+$$ X = 8000 + R \times \frac{1 - (1+i)^{-n}}{i}$$
+
+```{r}
+8000 + 680 * annuity(i = 0.12 / 12, n = 36, type = "arrears")
+```
+
+
+\rule{\textwidth}{0.4pt}
+**7.** El 1 de mayo de 2000 una persona depositó $500 en una cuenta de ahorros que paga el 3% convertible semestralmente y continuó haciendo depósitos similares cada 6 meses desde entonces. Después del 1 de mayo de 2003, el banco elevó el interés al 4% convertible semestralmente. ¿Cuánto registró la cuenta precisamente después del depósito del 1 de noviembre de 2005?
+
+$$ X = \left[  C(1+i_1)^{n_1} + R \times\frac{(1+i_1)^{n_1}-1}{i_1} \right] (1+i_2)^{n_2}  + R \times \frac{(1+i_2)^{n_2}-1}{i_2}  $$
+
+
+```{r}
 (500 * (1 + 0.03 / 2) ^ 6 + 
     500 * accumulatedValue(i = 0.03 / 2, n = 6, type = "arrears")) * (1 + 0.04 / 2) ^ 5 + 
-  500 * accumulatedValue(i = 0.04 / 2, n = 5, type = "arrears")
+      500 * accumulatedValue(i = 0.04 / 2, n = 5, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+**8.** Una persona acuerda liquidar una deuda mediante 12 pagos semestrales de $5300 cada uno con intereses al 8% convertible semestral. Si omite los tres primeros pagos, ¿qué pago tendrá que hacer en el vencimiento del siguiente para quedar al corriente de sus pagos?
+
+$$ X = VF = R \times \frac{(1+i)^{n}-1}{i}$$
+
+```{r}
+5300 * accumulatedValue(i = 0.08 / 2, n = 4, type = "arrears")
+```
+
+
+\rule{\textwidth}{0.4pt}
+**9.** Una persona recibió tres ofertas al querer vender un apartamento: a) \$ 90000 de contado, b) \$30000 de contado y \$2300 al mes durante 36 meses, c) $2800 al mes durante 3.5 años. Si la tasa de interés es del 12% convertible mensualmente, ¿cuál de estas ofertas es la más ventajosa?
+
+$$X_a = VA_a$$
+
+$$X_b = VA_b + R_b \times \frac{1 - (1+i)^{-n_b}}{i}$$
+
+$$X_c = R_c \times \frac{1 - (1+i)^{-n_c}}{i}$$
+
+```{r}
+(ofertas <- c(a = 90000, 
+                b = 30000 + 2300 * annuity (i = 0.12 / 12, n = 36, type = "arrears"), 
+                  c = 2800 * annuity (i = 0.12 / 12, n = 3.5 * 12, type = "arrears")))
+ofertas[which.max(ofertas)]
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**10.** ¿Cuánto habrá en un fondo si se ha realizado depósitos trimestrales de \$1200 durante 10 años, además un depósito al final de cada año de $1600 en un banco que reconoce el 12% convertible de acuerdo con la periodicidad de cada transacción?
+
+$$X = VF_1 + VF_2 = R_1 \times \frac{(1+i_1)^{n_1} -1}{i_1} + R_2 \times \frac{(1+i_2)^{n_2} - 1}{i_2}$$
+```{r}
+1200 * accumulatedValue(i = 0.12 / 4, n = 10 * 4, type = "arrears") 
++ 1600 * accumulatedValue(i = 0.12, n = 10, type = "arrears")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**11.** Una máquina valorada en \$15000 se vende a plazos con una cuota inicial de $3000 y saldo en 18 cuotas mensuales, cargando el 16% de interés convertible mensualmente. Calcular el valor de las cuotas.
+
+$$VA =  X \times \frac{1 - (1+i)^{-n}}{i}$$
+
+```{r}
+  (15000 - 3000) / annuity(i = 0.16 / 12, n = 18, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+**12.** Una empresa necesita construir durante 10 años un fondo de depreciación de $70000 para reposición de maquinaria. Calcular el valor del depósito trimestral que deberá realizar en una institución financiera que paga una tasa de interés de 4% anual capitalizable trimestralmente.
+$$ VF = X \times \frac{(1+i)^{n}-1}{i}$$
+
+
+```{r}
+70000 / accumulatedValue(i = 0.04 / 4, n = 10 * 4, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+**13.** Reemplazar una serie de pagos de $12000 al final de cada año por el equivalente en pagos mensuales al final de cada mes suponiendo un interés al 6% convertible mensualmente.
+
+$$ VF = X \times \frac{(1+i)^{n}-1}{i}$$
+
+```{r}
+12000 / accumulatedValue(i = 0.06 / 12, n = 12, type = "arrears")
+```
+
+
+\rule{\textwidth}{0.4pt}
+**14.** Una persona espera disponer de \$3000 al cabo de tres años para pagar el anticipo de una casa. Para ello desea acumular este capital mediante depósitos semestrales en una cuenta de ahorros que paga el 6% de interés convertible semestralmente. ¿Cuál será el valor de cada depósito semestral si espera disponer de los $3000 inmediatamente después del último depósito.
+
+$$ VF = X \times \frac{(1+i)^{n}-1}{i}$$
+
+```{r}
+3000 / accumulatedValue(i = 0.06 / 2, n = 3 * 2, type = "arrears")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**15.** Para liquidar una deuda de \$10000, con intereses al 4% convertible semestralmente, se acuerda hacer una serie de pagos semestrales, el primero con vencimiento al término de 6 meses y el último en cinco años. Un año después un pago de $2500, hallar el valor del pago semestral.
+
+$$VA = X \times \frac{1 - (1+i)^{-n_1}}{i} + M(1+i)^{-n_2} $$
+
+```{r}
+(10000 - 2500 * (1 + 0.04 / 2) ^ -12) / annuity(i = 0.04 / 2, n = 5 * 2, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+**16.** Calcular el valor de los depósitos mensuales que durante 10 años deberá hacer una persona en un banco que reconoce una tasa de interés de 18% anual capitalizable mensualmente a fin de efectuar retiros de $500 mensuales durante los 5 años siguientes.
+$$X \times \frac{(1+i)^{n_1}-1}{i} = R \times \frac{1-(1+i)^{-n_2}}{i}$$
+
+```{r prompt=TRUE}
+(500 * annuity(i = 0.18 / 12, n = 5 * 12, type = "arrears")) / accumulatedValue(i = 0.18 / 12, n = 10 * 12, type = "arrears")
+```
+
+
+\rule{\textwidth}{0.4pt}
+**17.** Una persona ha depositado $250 al final de cada mes durante 5 años en una cuenta que paga el 4% convertible mensualmente. ¿Cuánto tenía en la cuenta al final de dicho período?
+
+$$X= VF = R \times \frac{(1+i)^n - 1}{i} $$
+
+```{r}
+250 * accumulatedValue(i = 0.04 / 12, n = 5 * 12, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+**18.** Un padre empieza a ahorrar para que su hijo pueda estudiar una carrera universitaria. Planea depositar $1500 en una cuenta de ahorros al final de cada trimestre durante los próximos 6 años. Si la tasa de interés es del 7% capitalizable trimestralmente, ¿cuál será el monto de la cuenta al cabo de 6 años?
+
+$$X = VF = R \times \frac{(1+i)^n - 1}{i} $$
+```{r}
+1500 * accumulatedValue(i = 0.07 / 4, n = 6 * 4, type = "immediate")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**19.** ¿Qué cantidad debió ser depositada el 1 de junio de 1998 en un fondo que produjo el 5% convertible semestralmente con el fin de poder hacer retiros semestrales de $600 cada uno, a partir del 1 de diciembre de 1998 y terminando el 1 de diciembre de 2007?
+
+$$X = VA = R \times \frac{1- (1+i)^{-n}}{i}$$
+```{r}
+600 * annuity(i = 0.05 / 2, n = 9 * 2 + 1, type = "arrears")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**20.** Con una tasa de interés al 8% convertible semestralmente, ¿qué pago único inmediato es equivalente a 25 pagos semestrales de $1000 cada uno, haciéndose el primero al final de seis meses?
+
+$$X = VA = R\times \frac{1- (1+i)^{-n}}{i}$$
+```{r}
+1000 * annuity(i = 0.08 / 2, n = 25, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+**21.** Se estima que un terreno boscoso producirá \$18000 anuales por su explotación en los próximos 20 años y entonces la tierra podrá venderse en $15000. Encontrar su valor actual suponiendo un interés al 6.25%.
+
+$$X = R \times \frac{1- (1+i)^{-n}}{i} + M(1+i)^{-n} $$
+
+```{r}
+18000 * annuity(i = 0.0625, n = 20, type = "arrears") + 15000 * (1 + 0.0625) ^ -20
+```
+
+
+
+
+
+\rule{\textwidth}{0.4pt}
+**22.** ¿Qué es más conveniente, comprar un automóvil en \$2750 de contado o pagar \$500 iniciales y $200 al final de cada mes por los próximos 12 meses, suponiendo intereses del 6% convertible mensualmente?
+
+$$X_a = VA_a$$
+$$X_b = VA_{b_1} + VA_{b_2} = VA_{b_1}+ R\times \frac{1- (1+i)^{-n}}{i}  $$
+
+
+```{r}
+(opciones <- c(a = 2750, 
+              b = 500 + 200 * annuity(i = 0.06 / 12, n = 12, type = "arrears")))
+opciones[which.min(opciones)]
+```
+
+
+\rule{\textwidth}{0.4pt}
+**23.** Un contrato estipula pagos semestrales de \$400 por los próximos 10 años y un pago adicional de $2500 al término de dicho período. Hallar el valor efectivo equivalente del contrato al 8% convertible semestralmente.
+
+$$X = VA_1 + VA_2 =R \times \frac{1- (1+i)^{-n}}{i} + M(1+i)^{-n} $$
+
+```{r}
+400 * annuity(i = 0.08 / 2, n = 10 * 2, type = "arrears") +
++ 2500 * (1 + 0.08 / 2) ^ -(10 * 2)
+```
+
+
+\rule{\textwidth}{0.4pt}
+**24.** El 1 de mayo de 1980, Marianela depositó $100 en una cuenta de ahorros que paga el 3% convertible semestralmente, y continuó haciendo depósitos similares cada 6 meses desde entonces. Después del 1 de mayo de 1992, el banco elevó el interés al 4% convertible semestralmente. ¿Cuánto tuvo en la cuenta precisamente después del depósito del 1 de noviembre de 2000?
+
+$$X = VF = \left[ C(1+i_1)^{n_1} + R \times  \frac{(1+i)^{n_1} -1}{i_1} \right](1+i_2)^{n_2} + R \times  \frac{(1+i_2)^{n_2} -1}{i_2} $$
+
+
+```{r}
+(100 * (1 + 0.03 / 2) ^ (12 * 2) + 
+100 * accumulatedValue(i = 0.03 / 2, n = 12 * 2, type = "arrears")) * (1 + 0.04 / 2) ^ (17) +
+100 * accumulatedValue(i = 0.04 / 2, n = 8 * 2 + 1, type = "arrears")
+```
+
+
+
+
+\rule{\textwidth}{0.4pt}
+**25.** Cada trimestre una persona deposita \$3200 en su cuenta de ahorros, la cual gana un interés del 3,8% trimestral. Después de tres años, suspende los depósitos trimestrales y el monto obtenido en ese momento pasa a un fondo de inversión que da el 22% capitalizable cada mes. Si el dinero permaneció 2 años en el fondo de inversión, obtenga el monto final en el fondo.
+
+$$ X = VF = \left [R \times \frac {(1+i_1)^{n_1} -1}{i_1} \right] (1+i_2)^{n_2}  $$
+
+```{r}
+(3200 * accumulatedValue(i = 0.038 / 4, n = 3 * 4, type = "arrears")) * (1 + 0.22 / 12) ^ (2 * 12)
+```
+
+\rule{\textwidth}{0.4pt}
+**26.** Una computadora cuesta $1050 y el comprador conviene pagar cuotas mensuales durante dos años. Si la tasa del mercado es 14,5% anual convertible mensualmente, halle el valor de cada cuota.
+
+$$ VA = X\times \frac{1 - (1+i)^n}{i}$$
+
+```{r}
+1050 / annuity(i = 0.145 / 12, n = 2 * 12, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+**27.** El día de hoy se contrae una deuda de $20000 y se compromete a pagar en cuotas semestrales vencidas durante 5 años. Hallar el valor de la cuota semestral que debe pagarse si se aplica un interés de 12% anual capitalizable semestralmente
+
+$$ VA = X\times \frac{1 - (1+i)^n}{i}$$
+
+```{r}
+20000 / annuity(i = 0.12 / 2, n = 5 * 2, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+**28.** Sustituir una serie de pagos de $10000 al principio de cada año, por el equivalente en pagos mensuales vencidos, con un interés del 8% convertible mensualmente.
+
+$$ VA = X\times \frac{1 - (1+i)^n}{i}$$
+```{r}
+10000 / annuity(i = 0.08 / 12, n = 12, type = "arrears")
+```
+
+
+\rule{\textwidth}{0.4pt}
+**29.** Al 1 de mayo de 2000, se tiene \$2475.60 en un fondo que paga el 3% convertible trimestralmente. Haciendo depósitos trimestrales iguales en el fondo, el 1 de agosto de 2000 y el último el 1 de noviembre de 2006, tendrá en esta última fecha $10000 en el fondo. Hallar el depósito requerido.
+
+
+$$ VF = C(1+i)^n + X\times \frac{(1+i)^n -1}{i}$$
+
+```{r}
+(10000 - 2475.60 * (1 + 0.03 / 4) ^ 26) / accumulatedValue(i = 0.03 / 4, n = 26, type = "arrears")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+
+
+**30.** Hoy se depositan \$15000 en una cuenta de ahorros que abona el 7% de interés. Transcurridos 3 años, se hacen nuevos depósitos cada final de año, de modo que a los 5 años, se tienen $70000 al efectuar el último depósito. Hallar el valor de los depósitos anuales.
+
+$$VF = C(1+i)^{n_1} + X \times \frac{(1+i)^{n_2} -1}{i}$$
+```{r}
+(70000 - (15000 * (1 + 0.07) ^ 8)) / accumulatedValue(i = 0.07, n = 5, type = "arrears")
+```
+
+
+
+
+# Anualidades anticipadas
+
+Se pueden utilizar los argumentos `advance` o `due` en las funciones `accumulatedValue` y `annuity`
+
+\rule{\textwidth}{0.4pt}
+**31.** Hallar el valor futuro y el valor actual de la anualidad anticipada: $300 mensuales durante 5 años al 6% capitalizable mensualmente.
+$$X_1 = VF = R \ \left[ \frac{(1+i)^n -1}{i} \right] (1+i)$$
+
+
+```{r}
+300 * accumulatedValue(i = 0.06 / 12, n = 5 * 12, type = "due")
+```
+
+$$X_2 = VA = R \ \left[ \frac{1 - (1+i)^{-n}}{i} \right] (1+i)$$
+
+```{r}
+300 * annuity(i = 0.06 / 12, n = 5 * 12, type = "advance")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**32.** Hallar el valor futuro y el valor actual de una anualidad anticipada de $2500 semestrales, por 6 años al 4% capitalizable semestralmente.
+
+$$X_1 = VF = R \ \left[ \frac{(1+i)^n -1}{i} \right] (1+i)$$
+
+```{r}
+2500 * accumulatedValue(i = 0.04 / 2, n = 6 * 2, type = "advance")
+```
+
+
+$$X_2 = VA = R \ \left[ \frac{1 - (1+i)^{-n}}{i} \right] (1+i)$$
+
+```{r}
+2500 * annuity( i = 0.04 / 2, n = 6 * 2, type = "advance")
+```
+
+
+
+
+\rule{\textwidth}{0.4pt}
+**33.** Una empresa reserva $1500 al principio de cada trimestre para construir un fondo para renovación de activos. Si el fondo acredita el 3% capitalizable trimestralmente, ¿cuál será el monto que dispondrá el fondo después de 8 años?
+
+$$X = VF = R \ \left[ \frac{(1+i)^n -1}{i} \right] (1+i)$$
+
+
+```{r}
+1500 * accumulatedValue(i = 0.03 / 4, n = 8 * 4, type = "due")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**34.** Gina García alquila un edificio en \$25000 anuales por adelantado e invierte $18000 de cada pago en un fondo que reconoce el 6%. ¿Cuál es el importe del fondo después de 10 años?
+
+$$X = VF = R \ \left[ \frac{(1+i)^n -1}{i} \right] (1+i)$$
+
+```{r}
+18000 * accumulatedValue(i = 0.06, n = 10, type = "advance")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**35.** Calcular el valor de contado de una propiedad vendida a 8 años plazo con pagos de $15200 semestrales anticipados, si la tasa de interés es del 10% convertible semestralmente
+
+$$X = VA = R \ \left[ \frac{1 - (1+i)^{-n}}{i} \right] (1+i)$$
+
+```{r}
+15200 * annuity(i = 0.10 / 2, n = 8 * 2, type = "advance")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**36.** Un auto puede ser adquirido mediante cuotas anticipadas de $950 mensuales, durante 18 meses, suponiendo intereses al 8% convertible mensualmente, ¿cuál es el valor de contado del auto?
+
+$$X = VA = R \ \left[ \frac{1 - (1+i)^{-n}}{i} \right] (1+i)$$
+
+```{r}
+950 * annuity(i = 0.08 / 12, n = 18, type = "advance")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**37.** Con el fin de disponer de $4000 dentro de 4 años, una empresa decide realizar depósitos trimestrales por anticipado en un fondo que reconoce el 8% con capitalización trimestral, encontrar el valor del depósito que se debe realizar.
+
+
+$$VF = X \ \left[ \frac{(1+i)^n -1}{i} \right] (1+i)$$
+
+```{r}
+4000 / accumulatedValue(i = 0.08 / 4, n = 4 * 4, type = "advance")
+```
+
+
+\rule{\textwidth}{0.4pt}
+**38.** Para reposición de activos, una empresa requiere de $45000 dentro de 4 años, decide entonces realizar depósitos semestrales por anticipado en un fondo que reconoce el 10% con capitalización semestral, encontrar el valor del depósito que se debe realizar.
+
+$$VF = X \ \left[ \frac{(1+i)^n -1}{i} \right] (1+i)$$
+
+```{r}
+45000 / accumulatedValue(i = 0.10 / 2, n = 4 * 2, type = "advance")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**39.** El valor de contado de un coche usado es de $8650, una persona desea pagar en 36 abonos mensuales, venciendo el primero el día de la compra. Si se carga el 15% convertible mensualmente, hallar el importe del pago mensual.
+
+$$VA = X \ \left[ \frac{1-(1+i)^n}{i} \right] (1+i)$$
+
+```{r}
+8650 / annuity(i = 0.15 / 12, n = 36, type = "advance")
+```
+
+\rule{\textwidth}{0.4pt}
+**40.** Una empresa adquiere una deuda de $30000 y propone pagar mediante cuotas trimestrales anticipadas por 3 años; encontrar el valor de la cuota trimestral anticipada si se aplica un interés de 8% anual capitalizable trimestralmente.
+
+$$VA = X \ \left[ \frac{1-(1+i)^n}{i} \right] (1+i)$$
+
+```{r}
+30000 / annuity(i = 0.08 / 4, n = 3 * 4, type = "advance")
+```
+
+
+\rule{\textwidth}{0.4pt}
+**41.** Calcular el valor de contado de un equipo médico que se vende a 2 años plazo, con el 9% de interés
+convertible trimestralmente y con pagos trimestrales anticipados de \$4000, y un último pago de \$3200 a los 2 años 3 meses.
+
+$$X = VA_1 + VA_2$$
+$$X = R \left[ \frac{1-(1+i)^{n_1}}{i} \right] (1+i) + \frac {M}{(1+i)^{n_2}}$$
+
+```{r}
+4000 * annuity(i = 0.09 / 4, n = 2 * 4, type = "advance") 
+  + 3200 * (1 + 0.09 / 4) ^ - (2 * 4 + 1)
+```
+
+
+\rule{\textwidth}{0.4pt}
+
+**42.** El día de hoy, Galo Bonilla deposita \$500 en una cuenta cuyo saldo a la fecha del depósito es de \$3500; y cada mes continúa con dichos depósitos por 2 años con un interés del 8% capitalizable mensualmente; precisamente al finalizar el segundo año va a empezar a realizar 8 retiros semestrales considerando una tasa del 12% capitalizable semestralmente. Encontrar el valor de los retiros semestrales de manera que la cuenta se liquide.
+
+$$VF_1 + VF_2 = VA$$
+
+$$C(1 + i_1)^{n_1} + R_1 \left[ \frac{(1+i_1)^{n_1} -1}{i_1} \right] (1+i_1) = X \left[ \frac{1-(1+i_2)^{n_2}}{i_2} \right] (1+i_2) $$
+
+```{r}
+(3500 * (1 + 0.08 / 12) ^ 24 + 
+500 * accumulatedValue(i = 0.08 / 12, n = 2 * 12, type = "advance")) / annuity (i = 0.12 / 2, n = 8, type = "advance")
+```
+
+
+
+
+
+
+
+# Anualidades diferidas
+
+\rule{\textwidth}{0.4pt}
+
+**43.** Se desea establecer un fondo, para que un hospital que estará terminado dentro de 6 años, reciba una renta anual de $35000 por 20 años. Hallar el valor del fondo si gana el 8% de interés.
+
+
+$$X = VA = R \times \frac{1 - (1+i)^{-n}}{i \ (1+i)^m}$$
+
+```{r}
+35000 * annuity(i = 0.08, n = 20, m = 5, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+
+**44.** Al nacimiento de su hijo, Marcelo desea depositar en una fiduciaria una cantidad tal que le proporcione a su hijo pagos de \$1250 cada 6 meses durante 10 años, venciendo el primero cuando cumpla 18 años. Si la fiduciaria paga el 3% convertible semestralmente, ¿cuánto tendrá que depositar Marcelo?
+
+$$X = VA = R \times \frac{1 - (1+i)^{-n}}{i \ (1+i)^m}$$
+
+```{r}
+1250 * annuity(i = 0.03/2, n = 10 * 2, m = 35, type = "arrears")
+```
+
+
+\rule{\textwidth}{0.4pt}
+
+**45.** Carlos desea depositar en un fondo que gana el 3% convertible trimestralmente, una cantidad de dinero suficiente que le permita hacer retiros trimestrales de \$1000 cada uno, el primero al término de 5 años y el último al término de 10 años. Hallar el depósito necesario.
+
+$$X = VA = R \times \frac{1 - (1+i)^{-n}}{i \ (1+i)^m}$$
+
+
+
+```{r}
+1000 * annuity(i = 0.03 / 4, n = 5 * 4, m = 19, type = "immediate")
+```
+
+\rule{\textwidth}{0.4pt}
+
+**46.** Una compañía es concesionaria de la explotación de un hotel, por 15 años contados desde su inauguración; el hotel será puesto en servicio dentro de dos años. Se estima que los ingresos brutos mensuales serán de \$25000. Hallar con la tasa del 12% convertible mensualmente, el valor actual de los ingresos brutos.
+
+$$X = VA = R \times \frac{1 - (1+i)^{-n}}{i \ (1+i)^m}$$
+
+```{r}
+25000 * annuity(i = 0.12 / 12, n = 15 * 12, m = 24, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+
+**47.** Una compañía adquiere yacimientos de mineral; los estudios de ingeniería demuestran que los trabajos preparatorios y vías de acceso demorarán 6 años. Se estima que los yacimientos en explotación rendirán una ganancia anual de \$600000. Suponiendo que la tasa comercial de interés es del 8% y que los yacimientos se agotarán después de 15 años continuos de explotación, hállese el Valor actual de la renta que espera obtenerse.
+
+$$X = VA = R \times \frac{1 - (1+i)^{-n}}{i \ (1+i)^m}$$
+
+```{r}
+600000 * annuity(i = 0.08, n =15, m = 6, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+
+**48.** Hallar el precio de contado de una propiedad comprada así: Cuota inicial de \$50000; 10 pagos trimestrales de \$12000, el primer pago dentro de 2 años; y un pago final de \$18000, 6 meses después del último pago trimestral. El interés es del 15% convertible trimestralmente.
+
+$$ X = VA = VA_1 + R \times \frac{1 - (1+i)^{-n_1}}{i \ (1+i)^m} + M (1+i)^{-n_2} $$
+```{r}
+50000 + 12000 * annuity(i = 0.15 / 4, n = 10, m = 7, type = "arrears") 
+  + 18000 * (1 + 0.15 / 4) ^ -19
+```
+
+
+\rule{\textwidth}{0.4pt}
+
+**49.** Un huerto proporcionará la primera cosecha completa al final del 5to año y se espera obtener por las siguientes cosechas un ingreso anual de \$5000 durante 16 años más, finalmente se podrá vender el huerto en $35000. Hallar el valor en efectivo del huerto suponiendo intereses al 5%
+
+$$ X = VA = R \times \frac{1 - (1+i)^{-n_1}}{i \ (1+i)^m} + M (1+i)^{-n_2}$$
+```{r}
+5000 * annuity(i = 0.05, n = 16, m = 4, type = "arrears") + 35000 * (1+0.05) ^ -20
+```
+
+
+\rule{\textwidth}{0.4pt}
+
+**50.** Un granjero compró un tractor el 1 de marzo, comprometiéndose a hacer pagos mensuales de \$ 2000 durante 24 meses, el primero el 1 de octubre y un pago adicional de \$1500 3 meses más tarde; si el interés es 12% convertible mensualmente, hallar el Valor Actual equivalente.
+
+$$ X = VA = R \times \frac{1 - (1+i)^{-n_1}}{i \ (1+i)^m} + M (1+i)^{-n_2}$$
+
+```{r}
+2000 * annuity(i = 0.12 / 12, n = 24, m = 6, type = "arrears") 
+  + 1500 * (1 + 0.12 / 12) ^ -33
+```
+
+
+\rule{\textwidth}{0.4pt}
+
+**51.** ¿Con cuánto se puede comprar una renta de \$15000 trimestrales, pagadera durante 10 años, debiendo comenzar el primer pago dentro de 4 años, si con el primer pago deberá recibirse además \$10000, si la tasa de interés es del 8% capitalizable trimestralmente.
+
+$$ X = VA = R \times \frac{1 - (1+i)^{-n_1}}{i \ (1+i)^m} + M (1+i)^{-n_2}$$
+
+```{r}
+15000 * annuity(i = 0.08 / 4, n = 40, m = 15, type = "arrears") 
+  + 10000 * (1 + 0.08 / 4) ^ -16
+```
+
+\rule{\textwidth}{0.4pt}
+
+**52.** Un artículo se compró a plazos con un pago inicial de \$1000 y 7 cuotas mensuales iguales de \$800 y un interés de financiación del 8% convertible mensualmente, si la primera cuota se pagó cinco meses después de entregado el artículo, encontrar el valor de contado.
+
+$$X = VA = VA_1 + R \times \frac{1 - (1+i)^{-n_1}}{i \ (1+i)^m} $$
+
+```{r}
+1000 + 800 * annuity(i = 0.08 / 12, n = 7, m = 4, type = "arrears")
+```
+
+
+
+
+
+\rule{\textwidth}{0.4pt}
+**53** Una ley de incentivos para la agricultura, permite a un agricultor adquirir equipos por valor de \$50000, para pagarlos dentro de 3 años, con 8 cuotas semestrales. Si la ley fija para este tipo de préstamos el 6% de interés, capitalizable semestralmente, hallar el valor de las cuotas semestrales.
+
+$$ VA = X \times \frac{1 - (1+i)^{-n_1}}{i \ (1+i)^m}$$
+
+```{r}
+50000 / annuity(i = 0.06 / 2, n = 8, m = 3 * 2 - 1, type = "arrears")
+```
+
+
+
+
+
+
+
+# Anualidades perpetuas
+
+
+\rule{\textwidth}{0.4pt}
+**54.** El testamento del señor Pérez establece que deberá pagarse al asilo de ancianos María Auxiliadora, una renta perpetua de \$1000, pagaderos al final de cada año. ¿Cuál es el valor actual de ese legado, suponiendo que se encuentra invertido a 10% de interés efectivo anual?
+
+```{r}
+1000 * annuity(i = 0.10, n = Inf, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+
+**55.** Suponiendo que una granja produzca \$5000 anuales indefinidamente, ¿cuál es su valor actual sobre la base del 10%?
+
+```{r}
+5000 * annuity(i = 0.10, n = Inf, type = "arrears")
+```
+
+
+\rule{\textwidth}{0.4pt}
+
+**56.** Establecer una cátedra en una universidad cuesta \$12500 anuales. Hallar el valor presente del fondo necesario para establecerla suponiendo intereses de 4%.
+```{r}
+12500 * annuity(i = 0.04, n = Inf, type = "advance")
+```
+
+
+\rule{\textwidth}{0.4pt}
+**57.** Los ex alumnos de una universidad deciden donar un laboratorio y los fondos para su mantenimiento futuro. Si el costo inicial es de \$ 150000 y el mantenimiento se estima en \$3000 anuales, hallar el valor de la donación si la tasa efectiva de interés es del 6 %.
+```{r}
+150000 + 3000 * annuity(i = 0.06, n = Inf, type = "arrears")
+```
+
+
+\rule{\textwidth}{0.4pt}
+
+**58.** Para estudiar en una universidad dentro de 10 años, es requisito fundamental -entre otros- depositar el día de hoy una suma de dinero en una institución financiera que paga mensualmente por ahorros de este tipo el 12 % capitalizable mensualmente y que permite a la institución disponer de \$2000 mensuales a perpetuidad. ¿Cuánto debo depositar el día de hoy?
+
+```{r}
+2000 * annuity( i = 0.12 / 12, n = Inf, m = 119, type = "immediate") * (1 + 0.12 / 12) ^ -119
+```
+
+\rule{\textwidth}{0.4pt}
+**59.** Se propone efectuar una serie de 60 depósitos mensuales iguales de \$750, para poder al siguiente mes después del último depósito, hacer retiros mensuales iguales a perpetuidad; ¿cuál será el valor de cada uno de los retiros si el banco reconoce una tasa de 12% capitalizable mensualmente?
+
+```{r}
+VA <- 750 * accumulatedValue(i = .12 / 12, n = 60, type = "arrears")
+i <- 0.12 / 12
+(R <- VA * i)
+
+```
+---
+title: "Anualidades con `R` - `lifecontingencies`"
+author: "Xavier Jiménez-Albán"
+date: "Julio de 2020"
+output:
+  html_notebook:
+    toc: true
+    toc_float: true
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE, comment=NA, prompt = TRUE, verbose=FALSE, prompt=TRUE, highlight = FALSE)
+```
+
+
+
+```{r libraries, include=TRUE, message=FALSE}
+library(lifecontingencies)
+```
+
+
+# Anualidades ordinarias
+Se pueden usar los argumentos `arrears` o `immediate` en las funciones `accumulatedValue` y `annuity`
+
+\rule{\textwidth}{0.4pt}
+**1.** Una persona ahorra $400 cada seis meses y los invierte al 4% convertible semestralmente. 
+Hallar el importe de sus ahorros después de 7 años. 
+$$X = VF = R \times \frac{(1+i)^{n}-1}{i}$$
+
+```{r}
+400 * accumulatedValue(i = 0.04 / 2, n = 7 * 2, k = 1, type = "arrears")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**2.** Un empleado invierte $130 al final de cada trimestre en un fondo que paga 7% convertible trimestralmente. ¿Cuál será el importe del fondo precisamente después de 12 depósitos?
+$$X = VF = R  \times \frac{(1+i)^{n}-1}{i}$$
+
+```{r}
+130 * accumulatedValue(i = 0.07 / 4, n = 12, m = 0, k = 1, type = "arrears")
+```
+
+
+\rule{\textwidth}{0.4pt}
+**3.** ¿Cuál es el valor presente de $1600 depositados en una cuenta al final de cada trimestre durante 4 años, si la tasa de interés es del 8% convertible trimestralmente?
+
+$$ X = VA = R \times \frac{1 - (1+i)^{-n}}{i}$$
+```{r}
+1600 * annuity(i = 0.08 / 4, n = 4 * 4, type = "arrears") 
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**4.** ¿Cuánto debió depositarse el 1 de junio de 2005 en un fondo que pagó el 10% convertible semestralmente con el objeto de poder hacer retiros semestrales de $2500 cada uno, desde el 1 de diciembre de 2005 hasta el 1 de diciembre de 2010?
+
+$$ X = VA = R \times  \frac{1 - (1+i)^{-n}}{i}$$
+
+```{r}
+2500 * annuity(i = 0.10 / 2, n = 1 + 5 * 2, type = "immediate")
+```
+
+\rule{\textwidth}{0.4pt}
+**5.** Una persona compra un coche nuevo en \$14000, si entrega su coche usado valorado en \$4250 como parte de pago, ¿cuánto tendrá que pagar en efectivo el día de hoy si el saldo restante se lo liquidará mediante el pago de $550 al final de cada mes durante 18 meses, con intereses al 6% convertible mensualmente?
+$$ 14000 = 4250 + X + VA$$
+$$ X = 14000 - 4250 - R \times \frac{1 - (1+i)^{-n}}{i}$$
+
+```{r}
+14000 - 4250 - 550 * annuity(i = 0.06 / 12, n = 18, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+**6.** Un concesionario de automóviles ofrece un auto nuevo con un pago inicial de \$8000 y 36 pagos mensuales de $680 cada uno, 
+con interés del 12% capitalizable mensualmente ¿Cuál es el valor de contado del auto?
+$$ X = 8000 + R \times \frac{1 - (1+i)^{-n}}{i}$$
+
+```{r}
+8000 + 680 * annuity(i = 0.12 / 12, n = 36, type = "arrears")
+```
+
+
+\rule{\textwidth}{0.4pt}
+**7.** El 1 de mayo de 2000 una persona depositó $500 en una cuenta de ahorros que paga el 3% convertible semestralmente y continuó haciendo depósitos similares cada 6 meses desde entonces. Después del 1 de mayo de 2003, el banco elevó el interés al 4% convertible semestralmente. ¿Cuánto registró la cuenta precisamente después del depósito del 1 de noviembre de 2005?
+
+$$ X = \left[  C(1+i_1)^{n_1} + R \times\frac{(1+i_1)^{n_1}-1}{i_1} \right] (1+i_2)^{n_2}  + R \times \frac{(1+i_2)^{n_2}-1}{i_2}  $$
+
+
+```{r}
+(500 * (1 + 0.03 / 2) ^ 6 + 
+    500 * accumulatedValue(i = 0.03 / 2, n = 6, type = "arrears")) * (1 + 0.04 / 2) ^ 5 + 
+      500 * accumulatedValue(i = 0.04 / 2, n = 5, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+**8.** Una persona acuerda liquidar una deuda mediante 12 pagos semestrales de $5300 cada uno con intereses al 8% convertible semestral. Si omite los tres primeros pagos, ¿qué pago tendrá que hacer en el vencimiento del siguiente para quedar al corriente de sus pagos?
+
+$$ X = VF = R \times \frac{(1+i)^{n}-1}{i}$$
+
+```{r}
+5300 * accumulatedValue(i = 0.08 / 2, n = 4, type = "arrears")
+```
+
+
+\rule{\textwidth}{0.4pt}
+**9.** Una persona recibió tres ofertas al querer vender un apartamento: a) \$ 90000 de contado, b) \$30000 de contado y \$2300 al mes durante 36 meses, c) $2800 al mes durante 3.5 años. Si la tasa de interés es del 12% convertible mensualmente, ¿cuál de estas ofertas es la más ventajosa?
+
+$$X_a = VA_a$$
+
+$$X_b = VA_b + R_b \times \frac{1 - (1+i)^{-n_b}}{i}$$
+
+$$X_c = R_c \times \frac{1 - (1+i)^{-n_c}}{i}$$
+
+```{r}
+(ofertas <- c(a = 90000, 
+                b = 30000 + 2300 * annuity (i = 0.12 / 12, n = 36, type = "arrears"), 
+                  c = 2800 * annuity (i = 0.12 / 12, n = 3.5 * 12, type = "arrears")))
+ofertas[which.max(ofertas)]
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**10.** ¿Cuánto habrá en un fondo si se ha realizado depósitos trimestrales de \$1200 durante 10 años, además un depósito al final de cada año de $1600 en un banco que reconoce el 12% convertible de acuerdo con la periodicidad de cada transacción?
+
+$$X = VF_1 + VF_2 = R_1 \times \frac{(1+i_1)^{n_1} -1}{i_1} + R_2 \times \frac{(1+i_2)^{n_2} - 1}{i_2}$$
+```{r}
+1200 * accumulatedValue(i = 0.12 / 4, n = 10 * 4, type = "arrears") 
++ 1600 * accumulatedValue(i = 0.12, n = 10, type = "arrears")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**11.** Una máquina valorada en \$15000 se vende a plazos con una cuota inicial de $3000 y saldo en 18 cuotas mensuales, cargando el 16% de interés convertible mensualmente. Calcular el valor de las cuotas.
+
+$$VA =  X \times \frac{1 - (1+i)^{-n}}{i}$$
+
+```{r}
+  (15000 - 3000) / annuity(i = 0.16 / 12, n = 18, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+**12.** Una empresa necesita construir durante 10 años un fondo de depreciación de $70000 para reposición de maquinaria. Calcular el valor del depósito trimestral que deberá realizar en una institución financiera que paga una tasa de interés de 4% anual capitalizable trimestralmente.
+$$ VF = X \times \frac{(1+i)^{n}-1}{i}$$
+
+
+```{r}
+70000 / accumulatedValue(i = 0.04 / 4, n = 10 * 4, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+**13.** Reemplazar una serie de pagos de $12000 al final de cada año por el equivalente en pagos mensuales al final de cada mes suponiendo un interés al 6% convertible mensualmente.
+
+$$ VF = X \times \frac{(1+i)^{n}-1}{i}$$
+
+```{r}
+12000 / accumulatedValue(i = 0.06 / 12, n = 12, type = "arrears")
+```
+
+
+\rule{\textwidth}{0.4pt}
+**14.** Una persona espera disponer de \$3000 al cabo de tres años para pagar el anticipo de una casa. Para ello desea acumular este capital mediante depósitos semestrales en una cuenta de ahorros que paga el 6% de interés convertible semestralmente. ¿Cuál será el valor de cada depósito semestral si espera disponer de los $3000 inmediatamente después del último depósito.
+
+$$ VF = X \times \frac{(1+i)^{n}-1}{i}$$
+
+```{r}
+3000 / accumulatedValue(i = 0.06 / 2, n = 3 * 2, type = "arrears")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**15.** Para liquidar una deuda de \$10000, con intereses al 4% convertible semestralmente, se acuerda hacer una serie de pagos semestrales, el primero con vencimiento al término de 6 meses y el último en cinco años. Un año después un pago de $2500, hallar el valor del pago semestral.
+
+$$VA = X \times \frac{1 - (1+i)^{-n_1}}{i} + M(1+i)^{-n_2} $$
+
+```{r}
+(10000 - 2500 * (1 + 0.04 / 2) ^ -12) / annuity(i = 0.04 / 2, n = 5 * 2, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+**16.** Calcular el valor de los depósitos mensuales que durante 10 años deberá hacer una persona en un banco que reconoce una tasa de interés de 18% anual capitalizable mensualmente a fin de efectuar retiros de $500 mensuales durante los 5 años siguientes.
+$$X \times \frac{(1+i)^{n_1}-1}{i} = R \times \frac{1-(1+i)^{-n_2}}{i}$$
+
+```{r prompt=TRUE}
+(500 * annuity(i = 0.18 / 12, n = 5 * 12, type = "arrears")) / accumulatedValue(i = 0.18 / 12, n = 10 * 12, type = "arrears")
+```
+
+
+\rule{\textwidth}{0.4pt}
+**17.** Una persona ha depositado $250 al final de cada mes durante 5 años en una cuenta que paga el 4% convertible mensualmente. ¿Cuánto tenía en la cuenta al final de dicho período?
+
+$$X= VF = R \times \frac{(1+i)^n - 1}{i} $$
+
+```{r}
+250 * accumulatedValue(i = 0.04 / 12, n = 5 * 12, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+**18.** Un padre empieza a ahorrar para que su hijo pueda estudiar una carrera universitaria. Planea depositar $1500 en una cuenta de ahorros al final de cada trimestre durante los próximos 6 años. Si la tasa de interés es del 7% capitalizable trimestralmente, ¿cuál será el monto de la cuenta al cabo de 6 años?
+
+$$X = VF = R \times \frac{(1+i)^n - 1}{i} $$
+```{r}
+1500 * accumulatedValue(i = 0.07 / 4, n = 6 * 4, type = "immediate")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**19.** ¿Qué cantidad debió ser depositada el 1 de junio de 1998 en un fondo que produjo el 5% convertible semestralmente con el fin de poder hacer retiros semestrales de $600 cada uno, a partir del 1 de diciembre de 1998 y terminando el 1 de diciembre de 2007?
+
+$$X = VA = R \times \frac{1- (1+i)^{-n}}{i}$$
+```{r}
+600 * annuity(i = 0.05 / 2, n = 9 * 2 + 1, type = "arrears")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**20.** Con una tasa de interés al 8% convertible semestralmente, ¿qué pago único inmediato es equivalente a 25 pagos semestrales de $1000 cada uno, haciéndose el primero al final de seis meses?
+
+$$X = VA = R\times \frac{1- (1+i)^{-n}}{i}$$
+```{r}
+1000 * annuity(i = 0.08 / 2, n = 25, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+**21.** Se estima que un terreno boscoso producirá \$18000 anuales por su explotación en los próximos 20 años y entonces la tierra podrá venderse en $15000. Encontrar su valor actual suponiendo un interés al 6.25%.
+
+$$X = R \times \frac{1- (1+i)^{-n}}{i} + M(1+i)^{-n} $$
+
+```{r}
+18000 * annuity(i = 0.0625, n = 20, type = "arrears") + 15000 * (1 + 0.0625) ^ -20
+```
+
+
+
+
+
+\rule{\textwidth}{0.4pt}
+**22.** ¿Qué es más conveniente, comprar un automóvil en \$2750 de contado o pagar \$500 iniciales y $200 al final de cada mes por los próximos 12 meses, suponiendo intereses del 6% convertible mensualmente?
+
+$$X_a = VA_a$$
+$$X_b = VA_{b_1} + VA_{b_2} = VA_{b_1}+ R\times \frac{1- (1+i)^{-n}}{i}  $$
+
+
+```{r}
+(opciones <- c(a = 2750, 
+              b = 500 + 200 * annuity(i = 0.06 / 12, n = 12, type = "arrears")))
+opciones[which.min(opciones)]
+```
+
+
+\rule{\textwidth}{0.4pt}
+**23.** Un contrato estipula pagos semestrales de \$400 por los próximos 10 años y un pago adicional de $2500 al término de dicho período. Hallar el valor efectivo equivalente del contrato al 8% convertible semestralmente.
+
+$$X = VA_1 + VA_2 =R \times \frac{1- (1+i)^{-n}}{i} + M(1+i)^{-n} $$
+
+```{r}
+400 * annuity(i = 0.08 / 2, n = 10 * 2, type = "arrears") +
++ 2500 * (1 + 0.08 / 2) ^ -(10 * 2)
+```
+
+
+\rule{\textwidth}{0.4pt}
+**24.** El 1 de mayo de 1980, Marianela depositó $100 en una cuenta de ahorros que paga el 3% convertible semestralmente, y continuó haciendo depósitos similares cada 6 meses desde entonces. Después del 1 de mayo de 1992, el banco elevó el interés al 4% convertible semestralmente. ¿Cuánto tuvo en la cuenta precisamente después del depósito del 1 de noviembre de 2000?
+
+$$X = VF = \left[ C(1+i_1)^{n_1} + R \times  \frac{(1+i)^{n_1} -1}{i_1} \right](1+i_2)^{n_2} + R \times  \frac{(1+i_2)^{n_2} -1}{i_2} $$
+
+
+```{r}
+(100 * (1 + 0.03 / 2) ^ (12 * 2) + 
+100 * accumulatedValue(i = 0.03 / 2, n = 12 * 2, type = "arrears")) * (1 + 0.04 / 2) ^ (17) +
+100 * accumulatedValue(i = 0.04 / 2, n = 8 * 2 + 1, type = "arrears")
+```
+
+
+
+
+\rule{\textwidth}{0.4pt}
+**25.** Cada trimestre una persona deposita \$3200 en su cuenta de ahorros, la cual gana un interés del 3,8% trimestral. Después de tres años, suspende los depósitos trimestrales y el monto obtenido en ese momento pasa a un fondo de inversión que da el 22% capitalizable cada mes. Si el dinero permaneció 2 años en el fondo de inversión, obtenga el monto final en el fondo.
+
+$$ X = VF = \left [R \times \frac {(1+i_1)^{n_1} -1}{i_1} \right] (1+i_2)^{n_2}  $$
+
+```{r}
+(3200 * accumulatedValue(i = 0.038 / 4, n = 3 * 4, type = "arrears")) * (1 + 0.22 / 12) ^ (2 * 12)
+```
+
+\rule{\textwidth}{0.4pt}
+**26.** Una computadora cuesta $1050 y el comprador conviene pagar cuotas mensuales durante dos años. Si la tasa del mercado es 14,5% anual convertible mensualmente, halle el valor de cada cuota.
+
+$$ VA = X\times \frac{1 - (1+i)^n}{i}$$
+
+```{r}
+1050 / annuity(i = 0.145 / 12, n = 2 * 12, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+**27.** El día de hoy se contrae una deuda de $20000 y se compromete a pagar en cuotas semestrales vencidas durante 5 años. Hallar el valor de la cuota semestral que debe pagarse si se aplica un interés de 12% anual capitalizable semestralmente
+
+$$ VA = X\times \frac{1 - (1+i)^n}{i}$$
+
+```{r}
+20000 / annuity(i = 0.12 / 2, n = 5 * 2, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+**28.** Sustituir una serie de pagos de $10000 al principio de cada año, por el equivalente en pagos mensuales vencidos, con un interés del 8% convertible mensualmente.
+
+$$ VA = X\times \frac{1 - (1+i)^n}{i}$$
+```{r}
+10000 / annuity(i = 0.08 / 12, n = 12, type = "arrears")
+```
+
+
+\rule{\textwidth}{0.4pt}
+**29.** Al 1 de mayo de 2000, se tiene \$2475.60 en un fondo que paga el 3% convertible trimestralmente. Haciendo depósitos trimestrales iguales en el fondo, el 1 de agosto de 2000 y el último el 1 de noviembre de 2006, tendrá en esta última fecha $10000 en el fondo. Hallar el depósito requerido.
+
+
+$$ VF = C(1+i)^n + X\times \frac{(1+i)^n -1}{i}$$
+
+```{r}
+(10000 - 2475.60 * (1 + 0.03 / 4) ^ 26) / accumulatedValue(i = 0.03 / 4, n = 26, type = "arrears")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+
+
+**30.** Hoy se depositan \$15000 en una cuenta de ahorros que abona el 7% de interés. Transcurridos 3 años, se hacen nuevos depósitos cada final de año, de modo que a los 5 años, se tienen $70000 al efectuar el último depósito. Hallar el valor de los depósitos anuales.
+
+$$VF = C(1+i)^{n_1} + X \times \frac{(1+i)^{n_2} -1}{i}$$
+```{r}
+(70000 - (15000 * (1 + 0.07) ^ 8)) / accumulatedValue(i = 0.07, n = 5, type = "arrears")
+```
+
+
+
+
+# Anualidades anticipadas
+
+Se pueden utilizar los argumentos `advance` o `due` en las funciones `accumulatedValue` y `annuity`
+
+\rule{\textwidth}{0.4pt}
+**31.** Hallar el valor futuro y el valor actual de la anualidad anticipada: $300 mensuales durante 5 años al 6% capitalizable mensualmente.
+$$X_1 = VF = R \ \left[ \frac{(1+i)^n -1}{i} \right] (1+i)$$
+
+
+```{r}
+300 * accumulatedValue(i = 0.06 / 12, n = 5 * 12, type = "due")
+```
+
+$$X_2 = VA = R \ \left[ \frac{1 - (1+i)^{-n}}{i} \right] (1+i)$$
+
+```{r}
+300 * annuity(i = 0.06 / 12, n = 5 * 12, type = "advance")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**32.** Hallar el valor futuro y el valor actual de una anualidad anticipada de $2500 semestrales, por 6 años al 4% capitalizable semestralmente.
+
+$$X_1 = VF = R \ \left[ \frac{(1+i)^n -1}{i} \right] (1+i)$$
+
+```{r}
+2500 * accumulatedValue(i = 0.04 / 2, n = 6 * 2, type = "advance")
+```
+
+
+$$X_2 = VA = R \ \left[ \frac{1 - (1+i)^{-n}}{i} \right] (1+i)$$
+
+```{r}
+2500 * annuity( i = 0.04 / 2, n = 6 * 2, type = "advance")
+```
+
+
+
+
+\rule{\textwidth}{0.4pt}
+**33.** Una empresa reserva $1500 al principio de cada trimestre para construir un fondo para renovación de activos. Si el fondo acredita el 3% capitalizable trimestralmente, ¿cuál será el monto que dispondrá el fondo después de 8 años?
+
+$$X = VF = R \ \left[ \frac{(1+i)^n -1}{i} \right] (1+i)$$
+
+
+```{r}
+1500 * accumulatedValue(i = 0.03 / 4, n = 8 * 4, type = "due")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**34.** Gina García alquila un edificio en \$25000 anuales por adelantado e invierte $18000 de cada pago en un fondo que reconoce el 6%. ¿Cuál es el importe del fondo después de 10 años?
+
+$$X = VF = R \ \left[ \frac{(1+i)^n -1}{i} \right] (1+i)$$
+
+```{r}
+18000 * accumulatedValue(i = 0.06, n = 10, type = "advance")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**35.** Calcular el valor de contado de una propiedad vendida a 8 años plazo con pagos de $15200 semestrales anticipados, si la tasa de interés es del 10% convertible semestralmente
+
+$$X = VA = R \ \left[ \frac{1 - (1+i)^{-n}}{i} \right] (1+i)$$
+
+```{r}
+15200 * annuity(i = 0.10 / 2, n = 8 * 2, type = "advance")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**36.** Un auto puede ser adquirido mediante cuotas anticipadas de $950 mensuales, durante 18 meses, suponiendo intereses al 8% convertible mensualmente, ¿cuál es el valor de contado del auto?
+
+$$X = VA = R \ \left[ \frac{1 - (1+i)^{-n}}{i} \right] (1+i)$$
+
+```{r}
+950 * annuity(i = 0.08 / 12, n = 18, type = "advance")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**37.** Con el fin de disponer de $4000 dentro de 4 años, una empresa decide realizar depósitos trimestrales por anticipado en un fondo que reconoce el 8% con capitalización trimestral, encontrar el valor del depósito que se debe realizar.
+
+
+$$VF = X \ \left[ \frac{(1+i)^n -1}{i} \right] (1+i)$$
+
+```{r}
+4000 / accumulatedValue(i = 0.08 / 4, n = 4 * 4, type = "advance")
+```
+
+
+\rule{\textwidth}{0.4pt}
+**38.** Para reposición de activos, una empresa requiere de $45000 dentro de 4 años, decide entonces realizar depósitos semestrales por anticipado en un fondo que reconoce el 10% con capitalización semestral, encontrar el valor del depósito que se debe realizar.
+
+$$VF = X \ \left[ \frac{(1+i)^n -1}{i} \right] (1+i)$$
+
+```{r}
+45000 / accumulatedValue(i = 0.10 / 2, n = 4 * 2, type = "advance")
+```
+
+
+
+\rule{\textwidth}{0.4pt}
+**39.** El valor de contado de un coche usado es de $8650, una persona desea pagar en 36 abonos mensuales, venciendo el primero el día de la compra. Si se carga el 15% convertible mensualmente, hallar el importe del pago mensual.
+
+$$VA = X \ \left[ \frac{1-(1+i)^n}{i} \right] (1+i)$$
+
+```{r}
+8650 / annuity(i = 0.15 / 12, n = 36, type = "advance")
+```
+
+\rule{\textwidth}{0.4pt}
+**40.** Una empresa adquiere una deuda de $30000 y propone pagar mediante cuotas trimestrales anticipadas por 3 años; encontrar el valor de la cuota trimestral anticipada si se aplica un interés de 8% anual capitalizable trimestralmente.
+
+$$VA = X \ \left[ \frac{1-(1+i)^n}{i} \right] (1+i)$$
+
+```{r}
+30000 / annuity(i = 0.08 / 4, n = 3 * 4, type = "advance")
+```
+
+
+\rule{\textwidth}{0.4pt}
+**41.** Calcular el valor de contado de un equipo médico que se vende a 2 años plazo, con el 9% de interés
+convertible trimestralmente y con pagos trimestrales anticipados de \$4000, y un último pago de \$3200 a los 2 años 3 meses.
+
+$$X = VA_1 + VA_2$$
+$$X = R \left[ \frac{1-(1+i)^{n_1}}{i} \right] (1+i) + \frac {M}{(1+i)^{n_2}}$$
+
+```{r}
+4000 * annuity(i = 0.09 / 4, n = 2 * 4, type = "advance") 
+  + 3200 * (1 + 0.09 / 4) ^ - (2 * 4 + 1)
+```
+
+
+\rule{\textwidth}{0.4pt}
+
+**42.** El día de hoy, Galo Bonilla deposita \$500 en una cuenta cuyo saldo a la fecha del depósito es de \$3500; y cada mes continúa con dichos depósitos por 2 años con un interés del 8% capitalizable mensualmente; precisamente al finalizar el segundo año va a empezar a realizar 8 retiros semestrales considerando una tasa del 12% capitalizable semestralmente. Encontrar el valor de los retiros semestrales de manera que la cuenta se liquide.
+
+$$VF_1 + VF_2 = VA$$
+
+$$C(1 + i_1)^{n_1} + R_1 \left[ \frac{(1+i_1)^{n_1} -1}{i_1} \right] (1+i_1) = X \left[ \frac{1-(1+i_2)^{n_2}}{i_2} \right] (1+i_2) $$
+
+```{r}
+(3500 * (1 + 0.08 / 12) ^ 24 + 
+500 * accumulatedValue(i = 0.08 / 12, n = 2 * 12, type = "advance")) / annuity (i = 0.12 / 2, n = 8, type = "advance")
+```
+
+
+
+
+
+
+
+# Anualidades diferidas
+
+\rule{\textwidth}{0.4pt}
+
+**43.** Se desea establecer un fondo, para que un hospital que estará terminado dentro de 6 años, reciba una renta anual de $35000 por 20 años. Hallar el valor del fondo si gana el 8% de interés.
+
+
+$$X = VA = R \times \frac{1 - (1+i)^{-n}}{i \ (1+i)^m}$$
+
+```{r}
+35000 * annuity(i = 0.08, n = 20, m = 5, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+
+**44.** Al nacimiento de su hijo, Marcelo desea depositar en una fiduciaria una cantidad tal que le proporcione a su hijo pagos de \$1250 cada 6 meses durante 10 años, venciendo el primero cuando cumpla 18 años. Si la fiduciaria paga el 3% convertible semestralmente, ¿cuánto tendrá que depositar Marcelo?
+
+$$X = VA = R \times \frac{1 - (1+i)^{-n}}{i \ (1+i)^m}$$
+
+```{r}
+1250 * annuity(i = 0.03/2, n = 10 * 2, m = 35, type = "arrears")
+```
+
+
+\rule{\textwidth}{0.4pt}
+
+**45.** Carlos desea depositar en un fondo que gana el 3% convertible trimestralmente, una cantidad de dinero suficiente que le permita hacer retiros trimestrales de \$1000 cada uno, el primero al término de 5 años y el último al término de 10 años. Hallar el depósito necesario.
+
+$$X = VA = R \times \frac{1 - (1+i)^{-n}}{i \ (1+i)^m}$$
+
+
+
+```{r}
+1000 * annuity(i = 0.03 / 4, n = 5 * 4, m = 19, type = "immediate")
+```
+
+\rule{\textwidth}{0.4pt}
+
+**46.** Una compañía es concesionaria de la explotación de un hotel, por 15 años contados desde su inauguración; el hotel será puesto en servicio dentro de dos años. Se estima que los ingresos brutos mensuales serán de \$25000. Hallar con la tasa del 12% convertible mensualmente, el valor actual de los ingresos brutos.
+
+$$X = VA = R \times \frac{1 - (1+i)^{-n}}{i \ (1+i)^m}$$
+
+```{r}
+25000 * annuity(i = 0.12 / 12, n = 15 * 12, m = 24, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+
+**47.** Una compañía adquiere yacimientos de mineral; los estudios de ingeniería demuestran que los trabajos preparatorios y vías de acceso demorarán 6 años. Se estima que los yacimientos en explotación rendirán una ganancia anual de \$600000. Suponiendo que la tasa comercial de interés es del 8% y que los yacimientos se agotarán después de 15 años continuos de explotación, hállese el Valor actual de la renta que espera obtenerse.
+
+$$X = VA = R \times \frac{1 - (1+i)^{-n}}{i \ (1+i)^m}$$
+
+```{r}
+600000 * annuity(i = 0.08, n =15, m = 6, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+
+**48.** Hallar el precio de contado de una propiedad comprada así: Cuota inicial de \$50000; 10 pagos trimestrales de \$12000, el primer pago dentro de 2 años; y un pago final de \$18000, 6 meses después del último pago trimestral. El interés es del 15% convertible trimestralmente.
+
+$$ X = VA = VA_1 + R \times \frac{1 - (1+i)^{-n_1}}{i \ (1+i)^m} + M (1+i)^{-n_2} $$
+```{r}
+50000 + 12000 * annuity(i = 0.15 / 4, n = 10, m = 7, type = "arrears") 
+  + 18000 * (1 + 0.15 / 4) ^ -19
+```
+
+
+\rule{\textwidth}{0.4pt}
+
+**49.** Un huerto proporcionará la primera cosecha completa al final del 5to año y se espera obtener por las siguientes cosechas un ingreso anual de \$5000 durante 16 años más, finalmente se podrá vender el huerto en $35000. Hallar el valor en efectivo del huerto suponiendo intereses al 5%
+
+$$ X = VA = R \times \frac{1 - (1+i)^{-n_1}}{i \ (1+i)^m} + M (1+i)^{-n_2}$$
+```{r}
+5000 * annuity(i = 0.05, n = 16, m = 4, type = "arrears") + 35000 * (1+0.05) ^ -20
+```
+
+
+\rule{\textwidth}{0.4pt}
+
+**50.** Un granjero compró un tractor el 1 de marzo, comprometiéndose a hacer pagos mensuales de \$ 2000 durante 24 meses, el primero el 1 de octubre y un pago adicional de \$1500 3 meses más tarde; si el interés es 12% convertible mensualmente, hallar el Valor Actual equivalente.
+
+$$ X = VA = R \times \frac{1 - (1+i)^{-n_1}}{i \ (1+i)^m} + M (1+i)^{-n_2}$$
+
+```{r}
+2000 * annuity(i = 0.12 / 12, n = 24, m = 6, type = "arrears") 
+  + 1500 * (1 + 0.12 / 12) ^ -33
+```
+
+
+\rule{\textwidth}{0.4pt}
+
+**51.** ¿Con cuánto se puede comprar una renta de \$15000 trimestrales, pagadera durante 10 años, debiendo comenzar el primer pago dentro de 4 años, si con el primer pago deberá recibirse además \$10000, si la tasa de interés es del 8% capitalizable trimestralmente.
+
+$$ X = VA = R \times \frac{1 - (1+i)^{-n_1}}{i \ (1+i)^m} + M (1+i)^{-n_2}$$
+
+```{r}
+15000 * annuity(i = 0.08 / 4, n = 40, m = 15, type = "arrears") 
+  + 10000 * (1 + 0.08 / 4) ^ -16
+```
+
+\rule{\textwidth}{0.4pt}
+
+**52.** Un artículo se compró a plazos con un pago inicial de \$1000 y 7 cuotas mensuales iguales de \$800 y un interés de financiación del 8% convertible mensualmente, si la primera cuota se pagó cinco meses después de entregado el artículo, encontrar el valor de contado.
+
+$$X = VA = VA_1 + R \times \frac{1 - (1+i)^{-n_1}}{i \ (1+i)^m} $$
+
+```{r}
+1000 + 800 * annuity(i = 0.08 / 12, n = 7, m = 4, type = "arrears")
+```
+
+
+
+
+
+\rule{\textwidth}{0.4pt}
+**53** Una ley de incentivos para la agricultura, permite a un agricultor adquirir equipos por valor de \$50000, para pagarlos dentro de 3 años, con 8 cuotas semestrales. Si la ley fija para este tipo de préstamos el 6% de interés, capitalizable semestralmente, hallar el valor de las cuotas semestrales.
+
+$$ VA = X \times \frac{1 - (1+i)^{-n_1}}{i \ (1+i)^m}$$
+
+```{r}
+50000 / annuity(i = 0.06 / 2, n = 8, m = 3 * 2 - 1, type = "arrears")
+```
+
+
+
+
+
+
+
+# Anualidades perpetuas
+
+
+\rule{\textwidth}{0.4pt}
+**54.** El testamento del señor Pérez establece que deberá pagarse al asilo de ancianos María Auxiliadora, una renta perpetua de \$1000, pagaderos al final de cada año. ¿Cuál es el valor actual de ese legado, suponiendo que se encuentra invertido a 10% de interés efectivo anual?
+
+```{r}
+1000 * annuity(i = 0.10, n = Inf, type = "arrears")
+```
+
+\rule{\textwidth}{0.4pt}
+
+**55.** Suponiendo que una granja produzca \$5000 anuales indefinidamente, ¿cuál es su valor actual sobre la base del 10%?
+
+```{r}
+5000 * annuity(i = 0.10, n = Inf, type = "arrears")
+```
+
+
+\rule{\textwidth}{0.4pt}
+
+**56.** Establecer una cátedra en una universidad cuesta \$12500 anuales. Hallar el valor presente del fondo necesario para establecerla suponiendo intereses de 4%.
+```{r}
+12500 * annuity(i = 0.04, n = Inf, type = "advance")
+```
+
+
+\rule{\textwidth}{0.4pt}
+**57.** Los ex alumnos de una universidad deciden donar un laboratorio y los fondos para su mantenimiento futuro. Si el costo inicial es de \$ 150000 y el mantenimiento se estima en \$3000 anuales, hallar el valor de la donación si la tasa efectiva de interés es del 6 %.
+```{r}
+150000 + 3000 * annuity(i = 0.06, n = Inf, type = "arrears")
+```
+
+
+\rule{\textwidth}{0.4pt}
+
+**58.** Para estudiar en una universidad dentro de 10 años, es requisito fundamental -entre otros- depositar el día de hoy una suma de dinero en una institución financiera que paga mensualmente por ahorros de este tipo el 12 % capitalizable mensualmente y que permite a la institución disponer de \$2000 mensuales a perpetuidad. ¿Cuánto debo depositar el día de hoy?
+
+```{r}
+2000 * annuity( i = 0.12 / 12, n = Inf, m = 119, type = "immediate") * (1 + 0.12 / 12) ^ -119
+```
+
+\rule{\textwidth}{0.4pt}
+**59.** Se propone efectuar una serie de 60 depósitos mensuales iguales de \$750, para poder al siguiente mes después del último depósito, hacer retiros mensuales iguales a perpetuidad; ¿cuál será el valor de cada uno de los retiros si el banco reconoce una tasa de 12% capitalizable mensualmente?
+
+```{r}
+VA <- 750 * accumulatedValue(i = .12 / 12, n = 60, type = "arrears")
+i <- 0.12 / 12
+(R <- VA * i)
+
+```
